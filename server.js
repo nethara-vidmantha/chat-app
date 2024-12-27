@@ -1,34 +1,32 @@
-// Import necessary modules
 const express = require('express');
 const http = require('http');
-const { Server } = require('socket.io');
+const socketIO = require('socket.io');
 
-// Initialize app and server
+// Create Express app
 const app = express();
 const server = http.createServer(app);
-const io = new Server(server);
+const io = socketIO(server);
 
-// Serve static files from "public" folder
+// Serve static files from the "public" folder
 app.use(express.static('public'));
 
-// Handle socket connections
+// WebSocket connection
 io.on('connection', (socket) => {
-    console.log('A user connected');
+  console.log('A user connected');
 
-    // Listen for chat messages
-    socket.on('chat message', (msg) => {
-        // Broadcast the message to all connected clients
-        io.emit('chat message', msg);
-    });
+  // Handle incoming chat messages
+  socket.on('chat message', (msg) => {
+    io.emit('chat message', msg); // Broadcast message to all connected clients
+  });
 
-    // Handle user disconnection
-    socket.on('disconnect', () => {
-        console.log('A user disconnected');
-    });
+  // Handle disconnection
+  socket.on('disconnect', () => {
+    console.log('A user disconnected');
+  });
 });
 
-// Start the server
-const PORT = 3000;
+// Use dynamic port for deployment
+const PORT = process.env.PORT || 3000;
 server.listen(PORT, () => {
-    console.log(`Server is running on http://localhost:${PORT}`);
+  console.log(`Server running on port ${PORT}`);
 });

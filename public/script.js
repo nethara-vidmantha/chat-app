@@ -1,25 +1,22 @@
-// Connect to the server
-const socket = io();
+const socket = io(); // Establish WebSocket connection
 
-// Select DOM elements
-const form = document.getElementById('chat-form');
-const input = document.getElementById('message-input');
-const messages = document.getElementById('messages');
+// Get DOM elements
+const messagesDiv = document.getElementById('messages');
+const messageInput = document.getElementById('messageInput');
+const sendButton = document.getElementById('sendButton');
 
-// Listen for form submission
-form.addEventListener('submit', (event) => {
-    event.preventDefault(); // Prevent page reload
-    if (input.value) {
-        // Send message to server
-        socket.emit('chat message', input.value);
-        input.value = ''; // Clear the input field
-    }
+// Handle incoming chat messages
+socket.on('chat message', (msg) => {
+  const messageElement = document.createElement('div');
+  messageElement.textContent = msg;
+  messagesDiv.appendChild(messageElement);
 });
 
-// Listen for incoming messages
-socket.on('chat message', (msg) => {
-    const item = document.createElement('div');
-    item.textContent = msg;
-    messages.appendChild(item);
-    messages.scrollTop = messages.scrollHeight; // Auto-scroll
+// Send a chat message
+sendButton.addEventListener('click', () => {
+  const message = messageInput.value;
+  if (message) {
+    socket.emit('chat message', message); // Send message to server
+    messageInput.value = ''; // Clear input
+  }
 });
