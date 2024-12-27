@@ -1,0 +1,12 @@
+# Set text files to use LF
+* text=auto
+
+# Force LF for specific files
+*.js text eol=lf
+*.json text eol=lf
+*.css text eol=lf
+*.html text eol=lf
+
+# Exclude binary files like images
+*.png binary
+*.jpg binary
